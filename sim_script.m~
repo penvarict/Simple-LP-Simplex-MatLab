@@ -12,46 +12,45 @@ b = [9;
 basic = [4,5];
 non_basic = [1,2,3];
 
-% op_soln_found = 0;
-% iterations = 0
-% while op_soln_found ~= 1
-%     %generate the basis matrix with the initial set of non_basic vars
-%     basis = generateBasisMatrix(a_aug, non_basic);
-%     
-%     %invert b matrix and calculate x_b
-%     inv_b = inv(basis);
-%     x_b = inv_b*b;
-%     
-%     %calculate c_basis, the objective func coeffs of the basis vectors
-%     c_b = extractCBasis(basic,c_aug);
-%     %check for optimal soln, find entering variable
-%     [op_soln_found, entering_var_index] = optTest(a,c_b,inv_b,c);
-%     
-%     %if optimal soln was not found above, calculate the exiting variable
-%     entering_basis_vector = extractEnteringBasicVec(a_aug, entering_var_index);
-%     exiting_var_index = minRatTest(entering_basis_vector,x_b);
-%     
-%     %update variable set
-%     basic_last = basic
-%     basic = updateBasicSet(basic,exiting_var_index,non_basic(entering_var_index))
-%     non_basic = updateNonBasicSet(non_basic,entering_var_index,basic_last(exiting_var_index))
-%     leaving_var_val = non_basic(entering_var_index);
-%     exiting_var_val = basic(exiting_var_index);
-%     iterations =iterations +1;
-% 
-% end
-% z = c_b*inv_b*b;
-% fprintf("Optimal value is Z = %f\n",z)
-% fprintf("The value occurs at the variable x_%.0f = %f respectively\n",[basic_last.',x_b].')
-% fprintf("All other variables are presumed to equal zero\n")
+op_soln_found = 0;
+iterations = 0
+while op_soln_found ~= 1
+    %generate the basis matrix with the initial set of non_basic vars
+    basis = generateBasisMatrix(a_aug, non_basic);
+    
+    %invert b matrix and calculate x_b
+    inv_b = inv(basis);
+    x_b = inv_b*b;
+    
+    %calculate c_basis, the objective func coeffs of the basis vectors
+    c_b = extractCBasis(basic,c_aug);
+    %check for optimal soln, find entering variable
+    [op_soln_found, entering_var_index] = optTest(a,c_b,inv_b,c);
+    
+    %if optimal soln was not found above, calculate the exiting variable
+    entering_basis_vector = extractEnteringBasicVec(a_aug, entering_var_index);
+    exiting_var_index = minRatTest(entering_basis_vector,x_b);
+    
+    %update variable set
+    basic_last = basic
+    basic = updateBasicSet(basic,exiting_var_index,non_basic(entering_var_index))
+    non_basic = updateNonBasicSet(non_basic,entering_var_index,basic_last(exiting_var_index))
+    leaving_var_val = non_basic(entering_var_index);
+    exiting_var_val = basic(exiting_var_index);
+    iterations =iterations +1;
 
-handleSolve(a,b,c,basic,non_basic)
+end
+z = c_b*inv_b*b;
+fprintf("Optimal value is Z = %f\n",z)
+fprintf("The value occurs at the variable x_%.0f = %f respectively\n",[basic_last.',x_b].')
+fprintf("All other variables are presumed to equal zero\n")
+
 
 % function handle solve
-function handleSolve(a, b, c, basic, non_basic)
-    i = eye(size(a, 1));
+function handleSolve(c,a,b, basic, non_basic)
+    i = eye(size(a,1));
     a_aug = [a i];
-    c_aug = [c zeros(1,size(a, 1))];
+    c_aug = [c zeros(1,size(a,1))];
     basic_local = basic;
     non_basic_local = non_basic;
     op_soln_found = 0;
@@ -64,24 +63,24 @@ function handleSolve(a, b, c, basic, non_basic)
         x_b = inv_b*b;
         
         %calculate c_basis, the objective func coeffs of the basis vectors
-        c_b = extractCBasis(basic_local, c_aug);
+        c_b = extractCBasis(basic,c_aug);
         %check for optimal soln, find entering variable
-        [op_soln_found, entering_var_index] = optTest(a, c_b, inv_b, c)
+        [op_soln_found, entering_var_index] = optTest(a,c_b,inv_b,c);
     
         %if optimal soln was not found above, calculate the exiting variable
         entering_basis_vector = extractEnteringBasicVec(a_aug, entering_var_index);
-        exiting_var_index = minRatTest(entering_basis_vector, x_b);
+        exiting_var_index = minRatTest(entering_basis_vector,x_b);
         
         %update variable set
         basic_last_local = basic_local;
-        basic_local = updateBasicSet(basic_local, exiting_var_index, non_basic_local(entering_var_index));
-        non_basic_local = updateNonBasicSet(non_basic_local, entering_var_index, basic_last_local(exiting_var_index));
+        basic_local = updateBasicSet(basic_local,exiting_var_index,non_basic_local(entering_var_index));
+        non_basic_local = updateNonBasicSet(non_basic_local,entering_var_index,basic_last_local(exiting_var_index));
 
         iterations =iterations +1;
     end
     z = c_b*inv_b*b;
     fprintf("Optimal value is Z = %f\n",z)
-    fprintf("The value occurs at the variable x_%.0f = %f respectively\n",[basic_last_local.',x_b].')
+    fprintf("The value occurs at the variable x_%.0f = %f respectively\n",[basic_last.',x_b].')
     fprintf("All other variables are presumed to equal zero\n")
 
     
