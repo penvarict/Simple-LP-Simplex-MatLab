@@ -13,7 +13,7 @@ basic = [4,5];
 non_basic = [1,2,3];
 
 op_soln_found = 0;
-ite = 0
+iterations = 0
 while op_soln_found ~= 1
     %generate the basis matrix with the initial set of non_basic vars
     basis = generateBasisMatrix(a_aug, non_basic);
@@ -37,13 +37,21 @@ while op_soln_found ~= 1
     non_basic = updateNonBasicSet(non_basic,entering_var_index,basic_last(exiting_var_index))
     leaving_var_val = non_basic(entering_var_index)
     exiting_var_val = basic(exiting_var_index)
-    
+    iterations =iterations +1;
 
 end
-z = c_b*inv_b*b
+z = c_b*inv_b*b;
 fprintf("Optimal value is Z = %f\n",z)
-fprintf("The value occurs at the variables x_%f = %f respectively\n",[basic_last.',x_b].')
+fprintf("The value occurs at the variable x_%.0f = %f respectively\n",[basic_last.',x_b].')
 fprintf("All other variables are presumed to equal zero\n")
+
+
+% function handle solve
+function handleSolve()
+
+
+end
+
 
 
 % function optTest will have multiple returns. 
