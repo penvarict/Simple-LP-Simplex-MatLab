@@ -16,7 +16,7 @@ basic = [4,5]; % basic starts as the slack variables x_4 and x_5
 non_basic = [1,2,3]; % non basic starts as the original decision variables.
 
 % solve the problem.
-handleSolve(a,b,c,basic,non_basic)
+% handleSolve(a,b,c,basic,non_basic)
 
 % solve another, wyndor problem
 c_1 = [3,5];
@@ -28,7 +28,7 @@ b_1 = [4;12;18];
 basic_1 = [3,4,5];
 non_basic_1 = [1,2];
 
-%handleSolve(a_1,b_1,c_1,basic_1,non_basic_1)
+handleSolve(a_1,b_1,c_1,basic_1,non_basic_1)
 %------------------------------------------------------
 
 
@@ -66,8 +66,6 @@ function handleSolve(a, b, c, basic, non_basic)
         %'a'and calculate the exiting variable
         entering_basis_vector = extractEnteringBasisVec(a_aug, entering_var_index);
         exiting_var_index = minRatTest(entering_basis_vector, x_b);
-        %Note that the exiting_var_index refers to the index of the basic
-        %set.
         
         %update variable set
         basic_last_local = basic_local;
@@ -75,8 +73,8 @@ function handleSolve(a, b, c, basic, non_basic)
         non_basic_local = updateNonBasicSet(non_basic_local, entering_var_index, basic_last_local(exiting_var_index));
         z = c_b*inv_basis*b;
         fprintf("\nLeaving basic variable: x_%.0f Entering basic variable: x_%.0f\n", ...
-                [basic_local(exiting_var_index),...
-                non_basic_local(entering_var_index)])
+                [basic_local(entering_var_index),...
+                basic_local(exiting_var_index)])
         fprintf("Current cpf %.2f\n",[z])
         
     end
@@ -95,7 +93,7 @@ end
 % [1 if an optimal sol'n is found (if not 0),
 % the coeffs of the non_basic variables,
 % the entering variable]
-function [optimal, entering_var_ind] = optTest(a,c_basis,inv_b, c, non_basic_vars)
+function [optimal, entering_var_ind] = optTest(a,c_basis,inv_b, c)
     non_basic_coeffs = (c_basis*inv_b*a) -c ;
     other_coeffs = c_basis*inv_b;
     min_coeff = min(non_basic_coeffs);
