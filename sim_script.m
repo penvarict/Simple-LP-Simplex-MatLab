@@ -1,7 +1,6 @@
 clear; 
 clc;
 
-
 % Hardcode problem from project description
 c = [1,9,1];
 a= [1,2,3;
@@ -16,6 +15,7 @@ basic = [4,5]; % basic starts as the slack variables x_4 and x_5
 non_basic = [1,2,3]; % non basic starts as the original decision variables.
 
 % solve the problem.
+fprintf("Project problem\n------------------------------------------------")
 handleSolve(a,b,c,basic,non_basic)
 
 % solve another, wyndor problem
@@ -28,6 +28,7 @@ b_1 = [4;12;18];
 basic_1 = [3,4,5];
 non_basic_1 = [1,2];
 
+fprintf("Wyndor Problem\n------------------------------------------------")
 handleSolve(a_1,b_1,c_1,basic_1,non_basic_1)
 %------------------------------------------------------
 
@@ -72,11 +73,15 @@ function handleSolve(a, b, c, basic, non_basic)
         %set.
         
         %update variable set
+        basic_loc_string =sprintf('%.0f ',basic_local);
+        n_basic_loc_string = sprintf('%.0f ',non_basic_local);
+        fprintf("\nBasic variables: x_%s Non-basic variables: x_%s", ...
+                basic_loc_string,n_basic_loc_string)
         basic_last_local = basic_local;
         basic_local = updateBasicSet(basic_local, exiting_var_index, non_basic_local(entering_var_index));
         non_basic_local = updateNonBasicSet(non_basic_local, entering_var_index, basic_last_local(exiting_var_index));
         z = c_b*inv_basis*b;
-        fprintf("\nLeaving basic variable: x_%.0f Entering basic variable: x_%.0f\n", ...
+        fprintf("\nEntering basic variable: x_%.0f Leaving basic variable: x_%.0f\n", ...
                 [basic_local(exiting_var_index),...
                 non_basic_local(entering_var_index)])
         fprintf("Current cpf %.2f\n",[z])
@@ -85,7 +90,7 @@ function handleSolve(a, b, c, basic, non_basic)
     fprintf("\nEnd simplex loop\n")
     fprintf("Optimal value is Z = %.3f\n",z)
     % format-print the variables and values of the optimal solution.
-    fprintf("The value occurs at the variable x_%.0f = %.3f respectively\n",[basic_last_local.',x_b].')
+    fprintf("The value occurs at the variable x_%.0f = %.3f\n",[basic_last_local.',x_b].')
     fprintf("All other variables are presumed to equal zero\n")
 
     
@@ -97,7 +102,7 @@ end
 % [1 if an optimal sol'n is found (if not 0),
 % the coeffs of the non_basic variables,
 % the entering variable]
-function [optimal, entering_var_ind] = optTest(a,c_basis,inv_b, c, non_basic_set)
+function [optimal, entering_var_ind] = optTest(a,c_basis,inv_b, c)
     non_basic_coeffs = (c_basis*inv_b*a) -c ;
     other_coeffs = c_basis*inv_b;
     
@@ -130,7 +135,6 @@ function leaving_var_ind = minRatTest(entering_basis_vec,b)
         else
             ratios(i,1) =0;
         end
-        
     end
     
     %tie break 
