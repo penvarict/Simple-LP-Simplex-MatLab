@@ -147,10 +147,10 @@ end
 % Returns type size(a) x size(a-non_basic cols)
 function basis = generateBasisMatrix(a_aug, basic,non_basic)
     
-    temp_new_basis = zeros(size(a_aug,1),size(a_aug,2)-(size(non_basic,2)));
+    temp_new_basis = zeros(size(a_aug,1),size(a_aug,2)-(size(non_basic,2)))
     
     for i= 1:size(basic,2)
-        temp_new_basis(:,i) = a_aug(:,basic(i));
+        temp_new_basis(:,i) = a_aug(:,basic(i))
     end
 
     basis = temp_new_basis;
