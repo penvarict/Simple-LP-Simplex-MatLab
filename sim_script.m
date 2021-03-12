@@ -1,5 +1,12 @@
 clear; 
 clc;
+% Charlie Penvari 
+% DASE 4000 - Project 1
+% Due 13th of March
+% email: cpenvari@uccs.edu
+
+
+
 
 % Hardcode problem from project description
 c = [1,9,1];
