@@ -1,6 +1,6 @@
 # Project 1 	
 
-**By: Charlie Penvari **
+**By: Charlie Penvari**
 
 The output for my implemented solution in MATLAB 2019b is as follows: 
 
